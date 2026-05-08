@@ -51,7 +51,10 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "ai-chat-speed-booster@xaron",
-      "strict_min_version": "115.0"
+      "strict_min_version": "115.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   }
 }
