@@ -9,7 +9,7 @@
     observer: null,
     settings: ACSB.storage.defaultSettings(),
     autoThreshold: 50,
-    perf: { jankFrames: 0, totalFrames: 0, sustainedLowJankSeconds: 0, lastSampleStart: 0 },
+    perf: { jankFrames: 0, totalFrames: 0, sustainedLowJankSeconds: 0, lastSampleStart: 0, running: false },
     stats: { virtualized: 0, collapsed: 0 }
   };
 
@@ -89,6 +89,8 @@
 
   function startPerfSampler(durationMs) {
     if (state.settings.threshold !== 'auto') return;
+    if (state.perf.running) return;
+    state.perf.running = true;
     var start = performance.now();
     var lastFrame = start;
     state.perf.jankFrames = 0;
@@ -110,6 +112,7 @@
           currentThreshold: state.autoThreshold,
           sustainedLowJankSeconds: state.perf.sustainedLowJankSeconds
         });
+        state.perf.running = false;
         runOnce();
       }
     }
