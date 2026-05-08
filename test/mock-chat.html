@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ACSB mock chat</title>
+  <style>
+    body { font: 14px system-ui, sans-serif; max-width: 720px; margin: 0 auto; padding: 16px; }
+    main [data-testid="conversation-turns"] { display: flex; flex-direction: column; gap: 12px; }
+    [data-message-author-role] { padding: 12px 14px; border-radius: 8px; background: #f4f4f7; }
+    [data-message-author-role="user"] { background: #e8e6ff; align-self: flex-end; max-width: 80%; }
+    [data-message-author-role="assistant"] { background: #f4f4f7; }
+  </style>
+  <link rel="stylesheet" href="../styles/injected.css" />
+</head>
+<body>
+  <h2>Mock chat (300 messages)</h2>
+  <p>Open DevTools → Performance, record a scroll, compare with/without the <code>acsb-msg</code> class.</p>
+  <main>
+    <div data-testid="conversation-turns" id="turns"></div>
+  </main>
+  <script>
+    var turns = document.getElementById('turns');
+    var lorem = 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ';
+    for (var i = 0; i < 300; i++) {
+      var d = document.createElement('div');
+      d.setAttribute('data-message-author-role', i % 2 === 0 ? 'user' : 'assistant');
+      d.setAttribute('data-testid', 'conversation-turn-' + i);
+      d.textContent = '#' + (i + 1) + ' ' + lorem.repeat(2 + (i % 5));
+      turns.appendChild(d);
+    }
+  </script>
+</body>
+</html>
