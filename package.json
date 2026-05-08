@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "node --test test/*.test.mjs",
-    "lint": "web-ext lint --self-hosted"
+    "lint": "web-ext lint --self-hosted",
+    "icons": "node scripts/make-icons.mjs",
+    "build": "mkdir -p dist && rm -f dist/*.zip && zip -r dist/ai-chat-speed-booster-$npm_package_version.zip manifest.json background.js icons/ content/ popup/ styles/ PRIVACY.md README.md -x '**/.DS_Store' '**/.gitkeep'"
   }
 }
