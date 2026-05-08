@@ -1,0 +1,10 @@
+{
+  "name": "ai-chat-speed-booster",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "lint": "web-ext lint --self-hosted"
+  }
+}
