@@ -1,0 +1,47 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --muted: #6b6b6b;
+  --accent: #5b4bff;
+  --hr: rgba(127,127,127,0.2);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #1a1a1d; --fg: #f0f0f0; --muted: #9b9b9b; --hr: rgba(255,255,255,0.1); }
+}
+* { box-sizing: border-box; }
+body {
+  width: 320px;
+  margin: 0;
+  padding: 14px 16px;
+  font: 13px/1.4 system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+h1 { font-size: 14px; font-weight: 600; margin: 0; }
+h2 { font-size: 12px; font-weight: 600; margin: 0 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+hr { border: none; border-top: 1px solid var(--hr); margin: 12px 0; }
+.acsb-muted { color: var(--muted); font-size: 12px; }
+
+.acsb-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.acsb-bolt { font-size: 18px; }
+
+.acsb-profile { display: flex; align-items: center; gap: 10px; }
+.acsb-profile img { width: 36px; height: 36px; border-radius: 50%; background: var(--hr); object-fit: cover; }
+.acsb-profile-text { flex: 1; min-width: 0; }
+.acsb-profile-text > div:first-child { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.acsb-toggle input { display: none; }
+.acsb-track { display: inline-block; width: 36px; height: 20px; background: var(--hr); border-radius: 10px; position: relative; transition: background 0.15s; }
+.acsb-thumb { display: block; width: 16px; height: 16px; background: white; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: left 0.15s; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+.acsb-toggle input:checked + .acsb-track { background: var(--accent); }
+.acsb-toggle input:checked + .acsb-track .acsb-thumb { left: 18px; }
+
+.acsb-radios { display: flex; flex-wrap: wrap; gap: 6px 12px; }
+.acsb-radios label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+
+.acsb-stats > div { margin-bottom: 4px; }
+.acsb-stats strong { font-variant-numeric: tabular-nums; }
+
+.acsb-pro ul { margin: 0; padding-left: 18px; color: var(--muted); }
+.acsb-pro { opacity: 0.7; }

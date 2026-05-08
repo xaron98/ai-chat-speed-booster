@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AI Chat Speed Booster</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header class="acsb-header">
+    <span class="acsb-bolt" aria-hidden="true">⚡</span>
+    <h1>AI Chat Speed Booster</h1>
+  </header>
+
+  <section class="acsb-profile">
+    <img id="acsb-avatar" alt="" />
+    <div class="acsb-profile-text">
+      <div id="acsb-name">—</div>
+      <div id="acsb-host" class="acsb-muted">Open ChatGPT, Claude or Gemini to use</div>
+    </div>
+    <label class="acsb-toggle">
+      <input type="checkbox" id="acsb-enabled" />
+      <span class="acsb-track"><span class="acsb-thumb"></span></span>
+    </label>
+  </section>
+
+  <hr />
+
+  <section class="acsb-threshold">
+    <h2>Collapse messages after</h2>
+    <div id="acsb-radios" class="acsb-radios">
+      <label><input type="radio" name="t" value="auto" /> <span>Auto (<em id="acsb-auto-current">—</em>)</span></label>
+      <label><input type="radio" name="t" value="30" /> <span>30</span></label>
+      <label><input type="radio" name="t" value="50" /> <span>50</span></label>
+      <label><input type="radio" name="t" value="100" /> <span>100</span></label>
+      <label><input type="radio" name="t" value="200" /> <span>200</span></label>
+    </div>
+  </section>
+
+  <hr />
+
+  <section class="acsb-stats">
+    <div>👁️ Virtualized: <strong id="acsb-virt">0</strong> messages</div>
+    <div>📦 Collapsed: <strong id="acsb-coll">0</strong> messages</div>
+    <div>💾 Status: <strong id="acsb-status">Inactive</strong></div>
+  </section>
+
+  <hr />
+
+  <section class="acsb-pro">
+    <h2>🔒 PRO features (coming soon)</h2>
+    <ul>
+      <li>Stats dashboard</li>
+      <li>Export chats</li>
+      <li>More AI sites</li>
+    </ul>
+  </section>
+
+  <script src="popup.js"></script>
+</body>
+</html>
