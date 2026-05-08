@@ -1,1 +1,28 @@
-/* populated in Task 6 */
+.acsb-msg {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
+}
+
+details.acsb-collapsed {
+  margin: 8px 0;
+  padding: 4px 0;
+  border-top: 1px dashed rgba(127, 127, 127, 0.3);
+  border-bottom: 1px dashed rgba(127, 127, 127, 0.3);
+}
+
+details.acsb-collapsed > summary {
+  cursor: pointer;
+  user-select: none;
+  padding: 6px 12px;
+  font-size: 13px;
+  opacity: 0.7;
+  list-style: none;
+}
+
+details.acsb-collapsed > summary::before {
+  content: "▸ ";
+  display: inline-block;
+  width: 1em;
+}
+
+details.acsb-collapsed[open] > summary::before { content: "▾ "; }
