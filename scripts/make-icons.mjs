@@ -10,24 +10,32 @@ mkdirSync(outDir, { recursive: true });
 const BG = [0x5b, 0x4b, 0xff];
 const BOLT = [0xff, 0xd4, 0x00];
 
-const POLY = [
-  [0.55, 0.08],
-  [0.22, 0.55],
-  [0.43, 0.55],
-  [0.30, 0.94],
-  [0.78, 0.40],
-  [0.55, 0.40],
-  [0.66, 0.08],
+const UPPER = [
+  [0.45, 0.05],
+  [0.75, 0.05],
+  [0.55, 0.55],
+  [0.15, 0.55],
 ];
 
-function inside(x, y) {
+const LOWER = [
+  [0.45, 0.45],
+  [0.85, 0.45],
+  [0.55, 0.95],
+  [0.25, 0.95],
+];
+
+function insidePoly(x, y, poly) {
   let on = false;
-  for (let i = 0, j = POLY.length - 1; i < POLY.length; j = i++) {
-    const [xi, yi] = POLY[i];
-    const [xj, yj] = POLY[j];
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, yi] = poly[i];
+    const [xj, yj] = poly[j];
     if (((yi > y) !== (yj > y)) && (x < ((xj - xi) * (y - yi)) / (yj - yi) + xi)) on = !on;
   }
   return on;
+}
+
+function inside(x, y) {
+  return insidePoly(x, y, UPPER) || insidePoly(x, y, LOWER);
 }
 
 function crc32(buf) {
@@ -84,7 +92,7 @@ function makePNG(size) {
   return Buffer.concat([sig, chunk('IHDR', ihdr), chunk('IDAT', idat), chunk('IEND', Buffer.alloc(0))]);
 }
 
-for (const size of [16, 48, 128]) {
+for (const size of [16, 32, 48, 96, 128]) {
   const png = makePNG(size);
   writeFileSync(resolve(outDir, `${size}.png`), png);
   console.log(`wrote icons/${size}.png (${png.length} bytes)`);
