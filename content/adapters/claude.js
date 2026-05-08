@@ -3,17 +3,16 @@
     id: 'claude',
     hosts: ['claude.ai'],
     containerSelectors: [
-      '[data-testid="chat-container"]',
-      'main [class*="conversation"]',
-      'main'
+      'div[data-autoscroll-container]',
+      '#main-content',
+      '#root'
     ],
     messageSelectors: [
       '[data-test-render-count]',
-      '[data-testid="user-message"], [data-testid="assistant-message"]',
-      '.font-claude-message, .font-user-message'
+      '[data-testid="user-message"], [data-testid="assistant-message"]'
     ],
-    avatarSelector: 'button[aria-label*="profile" i] img, header img[alt]',
-    nameSelector: 'button[aria-label*="profile" i] [data-testid="user-name"]'
+    avatarSelector: 'button[aria-label*="profile" i] img, button[aria-label*="account" i] img, header img[alt]',
+    nameSelector: 'button[aria-label*="profile" i] span'
   };
   root.ACSB = root.ACSB || {};
   root.ACSB.adapters = root.ACSB.adapters || {};
