@@ -19,6 +19,9 @@
   var $virt = document.getElementById('acsb-virt');
   var $coll = document.getElementById('acsb-coll');
   var $status = document.getElementById('acsb-status');
+  var $exportFormat = document.getElementById('acsb-export-format');
+  var $exportBtn = document.getElementById('acsb-export-btn');
+  var $exportStatus = document.getElementById('acsb-export-status');
 
   function getActiveTab(cb) {
     browserApi.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -103,6 +106,36 @@
     $enabled.disabled = disabled;
     var inputs = $radios.querySelectorAll('input[type="radio"]');
     for (var i = 0; i < inputs.length; i++) inputs[i].disabled = disabled;
+    if ($exportBtn) $exportBtn.disabled = disabled;
+    if ($exportFormat) $exportFormat.disabled = disabled;
+  }
+
+  function requestExport(tabId) {
+    if (tabId == null) return;
+    var format = $exportFormat ? $exportFormat.value : 'md';
+    $exportStatus.textContent = 'Exporting…';
+    $exportBtn.disabled = true;
+    try {
+      browserApi.tabs.sendMessage(tabId, { type: 'acsb:export', format: format }, function (resp) {
+        $exportBtn.disabled = false;
+        if (browserApi.runtime.lastError) {
+          $exportStatus.textContent = 'Error: ' + browserApi.runtime.lastError.message;
+          return;
+        }
+        if (!resp) {
+          $exportStatus.textContent = 'No response from page. Reload the tab and retry.';
+          return;
+        }
+        if (!resp.ok) {
+          $exportStatus.textContent = 'Export failed (' + (resp.reason || 'unknown') + ')';
+          return;
+        }
+        $exportStatus.textContent = 'Saved ' + resp.count + ' messages → ' + resp.filename;
+      });
+    } catch (e) {
+      $exportBtn.disabled = false;
+      $exportStatus.textContent = 'Error: ' + e.message;
+    }
   }
 
   function notifyContent(tabId, settings) {
@@ -163,6 +196,10 @@
               renderStats(newStats, settings);
             }
           });
+        }
+
+        if ($exportBtn) {
+          $exportBtn.addEventListener('click', function () { requestExport(tab.id); });
         }
       });
     });

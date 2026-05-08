@@ -12,7 +12,11 @@
       'message-content'
     ],
     avatarSelector: 'a[aria-label*="account" i] img, img.gb_d',
-    nameSelector: 'a[aria-label*="account" i]'
+    nameSelector: 'a[aria-label*="account" i]',
+    roleSelectors: {
+      user: 'user-query',
+      assistant: 'model-response'
+    }
   };
   root.ACSB = root.ACSB || {};
   root.ACSB.adapters = root.ACSB.adapters || {};

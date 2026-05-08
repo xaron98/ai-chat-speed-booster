@@ -135,6 +135,55 @@
     if (p) ACSB.storage.setProfile(location.hostname, p);
   }
 
+  function collectMessages() {
+    if (!state.container || !state.adapter) return [];
+    var roles = state.adapter.roleSelectors || {};
+    var nodes = [];
+    for (var i = 0; i < state.adapter.messageSelectors.length; i++) {
+      var found = state.container.querySelectorAll(state.adapter.messageSelectors[i]);
+      if (found.length > 0) { nodes = Array.prototype.slice.call(found); break; }
+    }
+    return nodes.map(function (el) {
+      var role = 'message';
+      if (roles.user && el.matches && el.matches(roles.user)) role = 'user';
+      else if (roles.assistant && el.matches && el.matches(roles.assistant)) role = 'assistant';
+      else if (roles.user && el.querySelector && el.querySelector(roles.user)) role = 'user';
+      else if (roles.assistant && el.querySelector && el.querySelector(roles.assistant)) role = 'assistant';
+      var text = (el.textContent || '').replace(/\s+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+      return { role: role, text: text };
+    }).filter(function (m) { return m.text.length > 0; });
+  }
+
+  function triggerDownload(body, mime, filename) {
+    try {
+      var blob = new Blob([body], { type: mime });
+      var url = URL.createObjectURL(blob);
+      var a = doc.createElement('a');
+      a.href = url; a.download = filename;
+      doc.body.appendChild(a);
+      a.click();
+      doc.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      return true;
+    } catch (e) {
+      console.warn('[ACSB] download failed', e);
+      return false;
+    }
+  }
+
+  function exportConversation(format) {
+    if (!state.container) return { ok: false, reason: 'no-container' };
+    var messages = collectMessages();
+    var meta = {
+      host: location.hostname,
+      title: doc.title || 'Conversation'
+    };
+    var out = ACSB.exporter.serialize(messages, format, meta);
+    var name = ACSB.exporter.buildFilename({ host: meta.host, ext: out.ext });
+    var ok = triggerDownload(out.body, out.mime, name);
+    return { ok: ok, count: messages.length, filename: name };
+  }
+
   function start() {
     state.adapter = pickAdapter();
     if (!state.adapter) return;
@@ -156,13 +205,18 @@
     });
 
     if (typeof chrome !== 'undefined' && chrome.runtime) {
-      chrome.runtime.onMessage.addListener(function (msg) {
+      chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         if (msg && msg.type === 'acsb:settings-changed') {
           state.settings = ACSB.storage.validateSettings(msg.settings);
           runOnce();
           if (state.settings.threshold === 'auto') startPerfSampler(2000);
         }
         if (msg && msg.type === 'acsb:request-stats') broadcast();
+        if (msg && msg.type === 'acsb:export') {
+          var result = exportConversation(msg.format);
+          if (sendResponse) sendResponse(result);
+          return true;
+        }
       });
     }
   }

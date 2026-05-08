@@ -43,5 +43,19 @@ hr { border: none; border-top: 1px solid var(--hr); margin: 12px 0; }
 .acsb-stats > div { margin-bottom: 4px; }
 .acsb-stats strong { font-variant-numeric: tabular-nums; }
 
+.acsb-export-row { display: flex; gap: 8px; align-items: center; }
+.acsb-export select {
+  flex: 1; padding: 6px 8px; border-radius: 6px;
+  border: 1px solid var(--hr); background: var(--bg); color: var(--fg);
+  font: inherit;
+}
+.acsb-export button {
+  padding: 6px 14px; border-radius: 6px; border: none;
+  background: var(--accent); color: white; cursor: pointer; font: inherit; font-weight: 600;
+}
+.acsb-export button:hover { filter: brightness(1.1); }
+.acsb-export button:disabled { opacity: 0.5; cursor: not-allowed; }
+#acsb-export-status { margin-top: 6px; min-height: 1em; }
+
 .acsb-pro ul { margin: 0; padding-left: 18px; color: var(--muted); }
 .acsb-pro { opacity: 0.7; }
