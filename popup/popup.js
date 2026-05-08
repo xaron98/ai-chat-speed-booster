@@ -133,11 +133,18 @@
 
         loadTabStats(tab.id, function (stats) { renderStats(stats || {}, settings); });
 
+        function refreshStatsSoon() {
+          setTimeout(function () {
+            loadTabStats(tab.id, function (stats) { renderStats(stats || {}, settings); });
+          }, 300);
+        }
+
         $enabled.addEventListener('change', function () {
           settings.enabled = $enabled.checked;
           saveSettings(settings, function () {
             notifyContent(tab.id, settings);
             renderStats({ virtualized: 0, collapsed: 0 }, settings);
+            refreshStatsSoon();
           });
         });
 
@@ -145,8 +152,16 @@
         for (var i = 0; i < inputs.length; i++) {
           inputs[i].addEventListener('change', function () {
             settings.threshold = readRadio();
-            saveSettings(settings, function () { notifyContent(tab.id, settings); });
-            $autoCurrent.textContent = settings.threshold === 'auto' ? ('currently: 50') : '—';
+            saveSettings(settings, function () { notifyContent(tab.id, settings); refreshStatsSoon(); });
+          });
+        }
+
+        if (browserApi.storage && browserApi.storage.onChanged) {
+          browserApi.storage.onChanged.addListener(function (changes, area) {
+            if (area === 'local' && changes['tab_' + tab.id]) {
+              var newStats = changes['tab_' + tab.id].newValue || {};
+              renderStats(newStats, settings);
+            }
           });
         }
       });
