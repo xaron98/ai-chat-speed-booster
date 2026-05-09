@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.5] - 2026-05-09
+
+### Changed
+- Icons: replaced the algorithmically-generated bolt with a hand-designed lightning bolt over a rounded purple square. Source PNG kept at `icons-source/bolt-source.png`; the five rendered sizes (16/32/48/96/128) come from `sips`-resizing the source.
+
+### Fixed
+- The popup display name no longer falls through to the avatar's generic `alt` text ("Profile image", "Avatar", "User"…). When the page exposes only a generic alt and no real name, the popup now leaves the name field empty instead of literally rendering "Profile image".
+
 ## [1.1.4] - 2026-05-09
 
 ### Fixed

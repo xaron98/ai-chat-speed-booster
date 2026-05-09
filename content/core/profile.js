@@ -7,12 +7,15 @@
     return t || null;
   }
 
+  var GENERIC_ALTS = /^(profile image|profile|avatar|user|user avatar|account)$/i;
+
   function readImgAlt(selector) {
     if (!selector || typeof document === 'undefined') return null;
     var img = document.querySelector(selector);
     if (!img) return null;
     var alt = (img.alt || '').trim();
-    return alt || null;
+    if (!alt || GENERIC_ALTS.test(alt)) return null;
+    return alt;
   }
 
   function extract(adapter) {
