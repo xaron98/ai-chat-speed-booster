@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.6] - 2026-05-09
+
+### Changed
+- Firefox `strict_min_version` raised from 115.0 to 140.0. This silences AMO validator warnings about `data_collection_permissions` (introduced in Firefox 140) and matches the actual minimum where the manifest's full feature set is honored.
+
 ## [1.1.5] - 2026-05-09
 
 ### Changed
