@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2] - 2026-05-09
+
+### Fixed
+- Eliminates Firefox's "this extension is slowing down the page" warning, which was caused by two remaining hot paths after 1.1.1:
+  - `MutationObserver` was watching the conversation container with `subtree: true`, which forced the browser to track every descendant mutation during streaming. Now the bootstrap detects the actual immediate parent of the messages and observes that with `subtree: false`, so streaming text inside an existing message no longer fires events at all.
+  - The scroll-based perf sampler was chaining 2 s `requestAnimationFrame` loops back-to-back during continuous scrolling. Removed entirely. Auto mode still samples once on page settle; the value persists until the user explicitly toggles or picks a manual threshold.
+
 ## [1.1.1] - 2026-05-09
 
 ### Fixed

@@ -7,13 +7,16 @@
     };
   }
 
-  function watch(targetEl, onChange) {
+  function watch(targetEl, onChange, opts) {
     if (!targetEl || typeof MutationObserver === 'undefined') {
       return { disconnect: function () {} };
     }
-    var trigger = debounce(onChange, 400);
+    opts = opts || {};
+    var debounceMs = typeof opts.debounceMs === 'number' ? opts.debounceMs : 400;
+    var subtree = opts.subtree === true;
+    var trigger = debounce(onChange, debounceMs);
     var mo = new MutationObserver(function () { trigger(); });
-    mo.observe(targetEl, { childList: true, subtree: true });
+    mo.observe(targetEl, { childList: true, subtree: subtree });
     return { disconnect: function () { mo.disconnect(); } };
   }
 

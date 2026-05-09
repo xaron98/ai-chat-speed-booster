@@ -137,15 +137,15 @@
     requestAnimationFrame(frame);
   }
 
-  function attachScrollSampling() {
-    var scrollTimer = null;
-    window.addEventListener('scroll', function () {
-      if (scrollTimer) return;
-      scrollTimer = setTimeout(function () {
-        scrollTimer = null;
-        if (state.settings.threshold === 'auto') startPerfSampler(2000);
-      }, 250);
-    }, { passive: true });
+  function findObserveTarget(messages, fallback) {
+    if (!messages || messages.length === 0) return fallback;
+    var parent = messages[0].parentElement;
+    if (!parent) return fallback;
+    var same = 0;
+    for (var i = 0; i < messages.length; i++) {
+      if (messages[i].parentElement === parent) same++;
+    }
+    return (same / messages.length > 0.8) ? parent : fallback;
   }
 
   function applyProfile() {
@@ -217,8 +217,11 @@
         applyProfile();
         runOnce();
         startPerfSampler(2000);
-        attachScrollSampling();
-        state.observer = ACSB.observer.watch(container, runOnce);
+        var msgs = findMessages(state.adapter, container);
+        var target = findObserveTarget(msgs, container);
+        var subtree = target === container; // fallback only — shallow if we found a tight parent
+        if (state.observer) state.observer.disconnect();
+        state.observer = ACSB.observer.watch(target, runOnce, { subtree: subtree });
       });
     });
 
