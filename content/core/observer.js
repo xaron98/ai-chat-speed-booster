@@ -11,7 +11,7 @@
     if (!targetEl || typeof MutationObserver === 'undefined') {
       return { disconnect: function () {} };
     }
-    var trigger = debounce(onChange, 100);
+    var trigger = debounce(onChange, 400);
     var mo = new MutationObserver(function () { trigger(); });
     mo.observe(targetEl, { childList: true, subtree: true });
     return { disconnect: function () { mo.disconnect(); } };

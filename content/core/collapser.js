@@ -27,25 +27,47 @@
     return count;
   }
 
+  function summaryText(n) { return 'Show ' + n + ' older messages'; }
+
   function applySplit(container, messages, threshold) {
     if (!container) return { collapseCount: 0, keepCount: 0 };
-    unwrapAll(container);
     var split = computeSplit({ messageCount: messages.length, threshold: threshold });
-    if (split.collapseCount === 0) return split;
+    var desired = split.collapseCount;
+    var existing = container.querySelector('details.' + WRAP_CLS);
+
+    if (desired === 0) {
+      if (existing) unwrapAll(container);
+      return split;
+    }
 
     var doc = container.ownerDocument || document;
-    var wrap = doc.createElement('details');
-    wrap.className = WRAP_CLS;
-    var summary = doc.createElement('summary');
-    summary.textContent = 'Show ' + split.collapseCount + ' older messages';
-    wrap.appendChild(summary);
 
-    var first = messages[0];
-    if (!first || !first.parentNode) return split;
-    first.parentNode.insertBefore(wrap, first);
-    for (var i = 0; i < split.collapseCount; i++) {
-      wrap.appendChild(messages[i]);
+    if (!existing) {
+      var first = messages[0];
+      if (!first || !first.parentNode) return split;
+      var wrap = doc.createElement('details');
+      wrap.className = WRAP_CLS;
+      var s = doc.createElement('summary');
+      s.textContent = summaryText(desired);
+      wrap.appendChild(s);
+      first.parentNode.insertBefore(wrap, first);
+      for (var i = 0; i < desired; i++) wrap.appendChild(messages[i]);
+      return split;
     }
+
+    var existingCount = existing.children.length - 1; // minus the summary
+    if (desired > existingCount) {
+      for (var j = existingCount; j < desired; j++) {
+        if (messages[j] && messages[j].parentNode !== existing) existing.appendChild(messages[j]);
+      }
+    } else if (desired < existingCount) {
+      // shrink (rare — threshold raised). full re-wrap is simpler.
+      unwrapAll(container);
+      return applySplit(container, messages, threshold);
+    }
+    var sum = existing.querySelector('summary');
+    var wantedText = summaryText(desired);
+    if (sum && sum.textContent !== wantedText) sum.textContent = wantedText;
     return split;
   }
 

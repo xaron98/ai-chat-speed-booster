@@ -10,7 +10,9 @@
     settings: ACSB.storage.defaultSettings(),
     autoThreshold: 50,
     perf: { jankFrames: 0, totalFrames: 0, sustainedLowJankSeconds: 0, lastSampleStart: 0, running: false },
-    stats: { virtualized: 0, collapsed: 0 }
+    stats: { virtualized: 0, collapsed: 0 },
+    lastSig: null,
+    cachedMessageSelector: null
   };
 
   function pickAdapter() {
@@ -44,9 +46,17 @@
 
   function findMessages(adapter, container) {
     if (!container) return [];
+    if (state.cachedMessageSelector) {
+      var cached = container.querySelectorAll(state.cachedMessageSelector);
+      if (cached.length > 0) return Array.prototype.slice.call(cached);
+      state.cachedMessageSelector = null; // invalidate; re-probe below
+    }
     for (var i = 0; i < adapter.messageSelectors.length; i++) {
       var nodes = container.querySelectorAll(adapter.messageSelectors[i]);
-      if (nodes.length > 0) return Array.prototype.slice.call(nodes);
+      if (nodes.length > 0) {
+        state.cachedMessageSelector = adapter.messageSelectors[i];
+        return Array.prototype.slice.call(nodes);
+      }
     }
     return [];
   }
@@ -72,12 +82,20 @@
     } catch (_) {}
   }
 
-  function runOnce() {
+  function runOnce(force) {
     if (!state.container) return;
     var msgs = findMessages(state.adapter, state.container);
+    var threshold = activeThreshold();
+    var sig = state.settings.enabled + '|' + msgs.length + '|' + threshold;
+
+    if (!force && sig === state.lastSig) {
+      return;
+    }
+    state.lastSig = sig;
+
     if (state.settings.enabled) {
       ACSB.optimizer.virtualize(msgs);
-      ACSB.collapser.applySplit(state.container, msgs, activeThreshold());
+      ACSB.collapser.applySplit(state.container, msgs, threshold);
     } else {
       ACSB.optimizer.devirtualizeAll(state.container);
       ACSB.collapser.unwrapAll(state.container);
@@ -208,7 +226,7 @@
       chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         if (msg && msg.type === 'acsb:settings-changed') {
           state.settings = ACSB.storage.validateSettings(msg.settings);
-          runOnce();
+          runOnce(true);
           if (state.settings.threshold === 'auto') startPerfSampler(2000);
         }
         if (msg && msg.type === 'acsb:request-stats') broadcast();
