@@ -11,8 +11,8 @@
       '[data-message-author-role]',
       '[data-testid^="conversation-turn"]'
     ],
-    avatarSelector: 'button[aria-label*="account" i] img, header img[alt]',
-    nameSelector: 'button[aria-label*="account" i] span, header [data-testid="username"]',
+    avatarSelector: 'nav img[alt="Profile image"], [data-testid*="profile"] img, nav img[alt]',
+    nameSelector: '[data-testid*="profile"] [class*="truncate"], nav button[aria-label]',
     roleSelectors: {
       user: '[data-message-author-role="user"]',
       assistant: '[data-message-author-role="assistant"]'
