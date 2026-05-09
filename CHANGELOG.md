@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.7] - 2026-05-09
+
+### Changed
+- Manifest declares an explicit `gecko_android.strict_min_version: 142.0` so the AMO validator stops flagging the Android compat gap on `data_collection_permissions`. The desktop Firefox minimum stays at 140.0.
+
 ## [1.1.6] - 2026-05-09
 
 ### Changed

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "AI Chat Speed Booster",
   "short_name": "ACSB",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Fix lag & freezing in long ChatGPT, Claude, and Gemini chats. 100% local, no data collection.",
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
@@ -63,6 +63,9 @@
       "data_collection_permissions": {
         "required": ["none"]
       }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
     }
   }
 }
