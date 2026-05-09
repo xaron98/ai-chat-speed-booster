@@ -116,7 +116,7 @@
   function requestExport(tabId) {
     if (tabId == null) return;
     var format = $exportFormat ? $exportFormat.value : 'md';
-    $exportStatus.textContent = 'Exporting…';
+    $exportStatus.textContent = 'Loading older messages…';
     $exportBtn.disabled = true;
     try {
       browserApi.tabs.sendMessage(tabId, { type: 'acsb:export', format: format }, function (resp) {

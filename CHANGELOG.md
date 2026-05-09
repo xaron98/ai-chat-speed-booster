@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.4] - 2026-05-09
+
+### Fixed
+- Export now captures the **complete** conversation, not just what's currently rendered. Before exporting, the extension scrolls the conversation to the top and waits for the message count to stabilize, forcing the host site to lazy-load any older messages. The original scroll position is restored after the export completes. Upper bound: ~12 s for very long chats.
+- Popup status now reads "Loading older messages…" while the scroll-to-top runs, so the wait is intelligible.
+
 ## [1.1.3] - 2026-05-09
 
 ### Privacy

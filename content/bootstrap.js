@@ -201,17 +201,56 @@
     }
   }
 
-  function exportConversation(format) {
-    if (!state.container) return { ok: false, reason: 'no-container' };
-    var messages = collectMessages();
-    var meta = {
-      host: location.hostname,
-      title: doc.title || 'Conversation'
-    };
-    var out = ACSB.exporter.serialize(messages, format, meta);
-    var name = ACSB.exporter.buildFilename({ host: meta.host, ext: out.ext });
-    var ok = triggerDownload(out.body, out.mime, name);
-    return { ok: ok, count: messages.length, filename: name };
+  function findScroller(el) {
+    var cur = el;
+    while (cur && cur !== doc.body) {
+      var s = cur.scrollHeight - cur.clientHeight;
+      var os = (typeof getComputedStyle !== 'undefined') ? getComputedStyle(cur).overflowY : '';
+      if (s > 4 && (os === 'auto' || os === 'scroll' || os === 'overlay')) return cur;
+      cur = cur.parentElement;
+    }
+    return doc.scrollingElement || doc.documentElement;
+  }
+
+  function loadFullHistory(done) {
+    var scroller = findScroller(state.container);
+    var prevScrollTop = scroller.scrollTop;
+    var lastCount = -1;
+    var stableTicks = 0;
+    var maxAttempts = 40; // ~12 s upper bound
+
+    function tick() {
+      var msgs = findMessages(state.adapter, state.container);
+      if (msgs.length === lastCount) {
+        stableTicks++;
+        if (stableTicks >= 3 || maxAttempts <= 0) {
+          scroller.scrollTop = prevScrollTop;
+          return done(msgs);
+        }
+      } else {
+        stableTicks = 0;
+        lastCount = msgs.length;
+      }
+      maxAttempts--;
+      scroller.scrollTop = 0;
+      setTimeout(tick, 300);
+    }
+    tick();
+  }
+
+  function exportConversation(format, sendResponse) {
+    if (!state.container) return sendResponse({ ok: false, reason: 'no-container' });
+    loadFullHistory(function () {
+      var messages = collectMessages();
+      var meta = {
+        host: location.hostname,
+        title: doc.title || 'Conversation'
+      };
+      var out = ACSB.exporter.serialize(messages, format, meta);
+      var name = ACSB.exporter.buildFilename({ host: meta.host, ext: out.ext });
+      var ok = triggerDownload(out.body, out.mime, name);
+      sendResponse({ ok: ok, count: messages.length, filename: name });
+    });
   }
 
   function start() {
@@ -247,8 +286,7 @@
         }
         if (msg && msg.type === 'acsb:request-stats') broadcast();
         if (msg && msg.type === 'acsb:export') {
-          var result = exportConversation(msg.format);
-          if (sendResponse) sendResponse(result);
+          exportConversation(msg.format, sendResponse || function () {});
           return true;
         }
       });
