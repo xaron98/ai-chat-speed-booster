@@ -12,7 +12,8 @@
     perf: { jankFrames: 0, totalFrames: 0, sustainedLowJankSeconds: 0, lastSampleStart: 0, running: false },
     stats: { virtualized: 0, collapsed: 0 },
     lastSig: null,
-    cachedMessageSelector: null
+    cachedMessageSelector: null,
+    observerIsTight: false
   };
 
   function pickAdapter() {
@@ -82,6 +83,16 @@
     } catch (_) {}
   }
 
+  function maybeUpgradeObserver(messages) {
+    if (state.observerIsTight) return;
+    if (!messages || messages.length === 0) return;
+    var target = findObserveTarget(messages, state.container);
+    if (target === state.container) return;
+    if (state.observer) state.observer.disconnect();
+    state.observer = ACSB.observer.watch(target, runOnce, { subtree: false });
+    state.observerIsTight = true;
+  }
+
   function runOnce(force) {
     if (!state.container) return;
     var msgs = findMessages(state.adapter, state.container);
@@ -103,6 +114,7 @@
     state.stats.virtualized = ACSB.optimizer.countVirtualized(state.container);
     state.stats.collapsed = ACSB.collapser.countCollapsed(state.container);
     broadcast();
+    maybeUpgradeObserver(msgs);
   }
 
   function startPerfSampler(durationMs) {
@@ -219,9 +231,10 @@
         startPerfSampler(2000);
         var msgs = findMessages(state.adapter, container);
         var target = findObserveTarget(msgs, container);
-        var subtree = target === container; // fallback only — shallow if we found a tight parent
+        var tight = target !== container;
         if (state.observer) state.observer.disconnect();
-        state.observer = ACSB.observer.watch(target, runOnce, { subtree: subtree });
+        state.observer = ACSB.observer.watch(target, runOnce, { subtree: !tight });
+        state.observerIsTight = tight;
       });
     });
 

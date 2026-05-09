@@ -27,7 +27,13 @@ hr { border: none; border-top: 1px solid var(--hr); margin: 12px 0; }
 .acsb-bolt { font-size: 18px; }
 
 .acsb-profile { display: flex; align-items: center; gap: 10px; }
-.acsb-profile img { width: 36px; height: 36px; border-radius: 50%; background: var(--hr); object-fit: cover; }
+.acsb-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--accent); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 13px; flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
 .acsb-profile-text { flex: 1; min-width: 0; }
 .acsb-profile-text > div:first-child { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 

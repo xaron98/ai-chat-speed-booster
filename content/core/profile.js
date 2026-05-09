@@ -1,11 +1,4 @@
 (function (root) {
-  function readImg(selector) {
-    if (!selector || typeof document === 'undefined') return null;
-    var img = document.querySelector(selector);
-    if (!img || !img.src) return null;
-    return { url: img.src, alt: img.alt || '' };
-  }
-
   function readText(selector) {
     if (!selector || typeof document === 'undefined') return null;
     var el = document.querySelector(selector);
@@ -14,15 +7,19 @@
     return t || null;
   }
 
+  function readImgAlt(selector) {
+    if (!selector || typeof document === 'undefined') return null;
+    var img = document.querySelector(selector);
+    if (!img) return null;
+    var alt = (img.alt || '').trim();
+    return alt || null;
+  }
+
   function extract(adapter) {
     if (!adapter) return null;
-    var img = readImg(adapter.avatarSelector);
-    var name = readText(adapter.nameSelector) || (img && img.alt) || null;
-    if (!img && !name) return null;
-    return {
-      avatarUrl: img ? img.url : null,
-      displayName: name
-    };
+    var name = readText(adapter.nameSelector) || readImgAlt(adapter.avatarSelector);
+    if (!name) return null;
+    return { displayName: name };
   }
 
   root.ACSB = root.ACSB || {};

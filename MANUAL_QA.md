@@ -12,7 +12,8 @@ Run this before publishing each release. The automated tests cover pure logic on
 2. Inspect a message in DevTools → confirm class `acsb-msg` is present.
 3. Confirm a `<details class="acsb-collapsed">` wraps the oldest messages once the threshold is exceeded.
 4. Click the popup icon → confirm:
-   - Profile photo and display name show.
+   - Avatar shows initials of the logged-in user (no remote image fetched).
+   - Display name appears (or is empty if not extractable).
    - Active host line reads `Active on <host>`.
    - Toggle is ON.
    - Auto radio is selected with a "currently: NN" label.
@@ -20,9 +21,10 @@ Run this before publishing each release. The automated tests cover pure logic on
 5. Toggle OFF → all messages lose `acsb-msg` and the `<details>` is unwrapped without reload.
 6. Toggle back ON → the optimizations re-apply within 200 ms.
 7. Switch to a manual threshold (e.g., 30) → collapser re-runs and folds more messages.
-8. Switch to Auto → after fast-scrolling for ~2 s the threshold may step down; verify in the popup.
-9. Open a tab on a non-supported site → popup body changes to "Open ChatGPT, Claude or Gemini to use" and controls are disabled.
-10. Close the chat tab → in DevTools → Application → Storage, confirm `tab_<id>` is removed (background cleanup).
+8. Switch to Auto → the perf sampler runs for 2 s and decides a threshold; the popup shows `Auto (currently: NN)`. Auto only re-samples when the user re-enters Auto.
+9. Export each format (Markdown / JSON / Plain text). Verify file lands in Downloads with `<host>-YYYY-MM-DD-HHMM.<ext>` and content covers all messages including those inside the collapser.
+10. Open a tab on a non-supported site → popup body changes to "Open ChatGPT, Claude or Gemini to use" and controls are disabled.
+11. Close the chat tab → in DevTools → Application → Storage, confirm `tab_<id>` is removed (background cleanup).
 
 ## Cross-browser
 - Repeat the per-site pass on Firefox AND Chrome.

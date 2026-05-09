@@ -82,15 +82,18 @@
     return parseInt(checked.value, 10);
   }
 
+  function initialsFrom(name, host) {
+    var s = (name || host || '').trim();
+    if (!s) return '';
+    var parts = s.split(/[\s@.\-_]+/).filter(Boolean);
+    var letters = parts.slice(0, 2).map(function (p) { return p[0].toUpperCase(); }).join('');
+    return letters || s[0].toUpperCase();
+  }
+
   function renderProfile(profile, host) {
-    if (profile && profile.avatarUrl) {
-      $avatar.src = profile.avatarUrl;
-      $avatar.alt = profile.displayName || '';
-    } else {
-      $avatar.removeAttribute('src');
-      $avatar.alt = '';
-    }
-    $name.textContent = (profile && profile.displayName) || (host ? '' : '—');
+    var name = (profile && profile.displayName) || '';
+    $avatar.textContent = initialsFrom(name, host);
+    $name.textContent = name || (host ? '' : '—');
     $host.textContent = host && isSupported(host) ? ('Active on ' + DISPLAY_HOST[host]) : 'Open ChatGPT, Claude or Gemini to use';
   }
 

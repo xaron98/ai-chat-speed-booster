@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.3] - 2026-05-09
+
+### Privacy
+- The popup no longer renders remote avatar images. It computes initials from the user's display name (read locally) and shows them in a colored circle. This eliminates the only path that caused the user's browser to make a request from the extension origin to a third-party CDN, aligning the implementation with the "zero outbound network requests" claim in PRIVACY.md.
+
+### Fixed
+- `bootstrap` now upgrades the MutationObserver from container-wide `subtree:true` to a shallow observer on the messages parent the moment the first messages appear. Previously, if the chat was empty when bootstrap ran, the observer stayed in fallback mode forever.
+
+### Docs
+- PRIVACY.md tightened: spells out that no profile photos are stored, transmitted, or displayed; only initials.
+- MANUAL_QA.md updated to remove the obsolete fast-scroll Auto-mode step and to add an Export verification step.
+
 ## [1.1.2] - 2026-05-09
 
 ### Fixed
