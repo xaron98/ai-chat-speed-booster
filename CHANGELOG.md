@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.8] - 2026-05-10
+
+### Performance
+- `.acsb-msg` now uses `contain-intrinsic-size: auto 600px` instead of `0 600px`. The `auto` keyword tells the browser to remember each off-screen message's actual rendered height after the first measurement and reuse it on subsequent layout passes, which removes the small jitter and re-measurement cost that appeared when scrolling back through long histories.
+
 ## [1.1.7] - 2026-05-09
 
 ### Changed

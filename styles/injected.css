@@ -1,6 +1,6 @@
 .acsb-msg {
   content-visibility: auto;
-  contain-intrinsic-size: 0 600px;
+  contain-intrinsic-size: auto 600px;
 }
 
 details.acsb-collapsed {
